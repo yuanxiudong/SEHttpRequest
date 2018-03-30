@@ -1,13 +1,4 @@
 <a href='https://gitee.com/SilentEagle/SEHttpRequest'><img src='https://gitee.com/SilentEagle/SEHttpRequest/widgets/widget_2.svg' alt='Fork me on Gitee'></img></a>
-HTML
-Markdown
-Image
-<a href='https://gitee.com/SilentEagle/SEHttpRequest'><img src='https://gitee.com/SilentEagle/SEHttpRequest/widgets/widget_3.svg' alt='Fork me on Gitee'></img></a>
-HTML
-Markdown
-Image
-<a href='https://gitee.com/SilentEagle/SEHttpRequest'><img src='https://gitee.com/SilentEagle/SEHttpRequest/widgets/widget_4.svg' alt='Fork me on Gitee'></img></a>
-
 # SEHttpRequest
 简单封装了一下HttpUrlConnection，纯Java语言实现，基于AndroidStudio Gradle 构建，
 可用于Java项目和Android项目。体积小巧，实现简单，能够胜任一般简单的HTTP请求开发需求。
