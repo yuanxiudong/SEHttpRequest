@@ -109,6 +109,9 @@ body对象是构建HttpRequest时设置的HttpResponseHandler处理之后返回�
 #### 文件下载
 文件下载可以使用HttpFileDownloadResponseHandler就可以从HttpResponse#getBody得到下载的文件。
 
+### API文档
+[API](./doc/index.html)
+
 
 ### 联系方式
 - Email： yuanxiudong66@sina.com

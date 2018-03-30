@@ -32,6 +32,13 @@ public class HttpMultipleRequest extends HttpRequest {
     private Map<String, MultipleFormParam> mFormParamMap = new ConcurrentHashMap<>();
     private String mBoundary = System.currentTimeMillis() + "";
 
+    /**
+     * Multiple request.
+     *
+     * @param url             request url
+     * @param boundary        multiple split boundary or null
+     * @param responseHandler response handler
+     */
     public HttpMultipleRequest(String url, String boundary, HttpResponseHandler responseHandler) {
         super(url, responseHandler);
         if (boundary != null && boundary.trim().length() != 0) {
@@ -82,6 +89,8 @@ public class HttpMultipleRequest extends HttpRequest {
      *
      * @param name param name
      * @param file param file
+     * @throws FileNotFoundException file not found or is a directory
+     * @throws IllegalAccessException    file can't read
      */
     public void addParam(String name, File file) throws FileNotFoundException, IllegalAccessException {
         MultipleFormParam param = new MultipleFormParam(name, file, null);
@@ -184,6 +193,13 @@ public class HttpMultipleRequest extends HttpRequest {
         private String contentType;
         private int type;
 
+        /**
+         * Multiple form  string param.
+         *
+         * @param name        param name
+         * @param value       param value
+         * @param contentType param value type or null
+         */
         public MultipleFormParam(String name, String value, String contentType) {
             this.name = name;
             this.value = value;
@@ -191,6 +207,16 @@ public class HttpMultipleRequest extends HttpRequest {
             this.type = 0;
         }
 
+        /**
+         * Multiple form file param.
+         * the content type can be null!
+         *
+         * @param name        param key
+         * @param file        param file
+         * @param contentType file content type or null
+         * @throws FileNotFoundException  file not found or is a directory
+         * @throws IllegalAccessException file can't read
+         */
         public MultipleFormParam(String name, File file, String contentType) throws FileNotFoundException, IllegalAccessException {
             if (file == null || !file.isDirectory() || !file.exists()) {
                 throw new FileNotFoundException();

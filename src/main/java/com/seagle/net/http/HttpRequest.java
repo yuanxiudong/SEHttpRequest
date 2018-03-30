@@ -15,19 +15,17 @@ import static com.seagle.net.http.HttpResponse.SYSTEM_ERROR;
 /**
  * <h1>HTTP request.</h1>
  * <p>
- * This class support async and sync http request.<br/>
+ * This class support async and sync http request.<br>
  * When new a HttpRequest,if HttpCallback is null,
  * you can call {@link #getResponse()} to get the request's response ,
  * this will block caller thread.
- * </p>
  * <p>
  * if you want request some key-value params,
  * see this sub class {@link com.seagle.net.http.request.HttpFormRequest},
- * and multiple form request see {@link com.seagle.net.http.request.HttpMultipleRequest}.<br/>
+ * and multiple form request see {@link com.seagle.net.http.request.HttpMultipleRequest}.<br>
  * You can also create self Request class by extend this class.
- * </p>
  * <p>
- * Request response's body will be different as the param HttpResponseHandler you give,and you have to force convert {@link HttpResponse#getBody()} <br/>
+ * Request response's body will be different as the param HttpResponseHandler you give,and you have to force convert {@link HttpResponse#getBody()} <br>
  * There are two handler class:
  * <ul>
  * <li>{@link com.seagle.net.http.response.HttpFileDownloadResponseHandler} for file download,the response body is a File</li>
@@ -36,7 +34,7 @@ import static com.seagle.net.http.HttpResponse.SYSTEM_ERROR;
  * <li>If http request had an exception,the response code is {@link HttpResponse#SYSTEM_ERROR} and body is a Exception</li>
  * </ul>
  * You can also create yourself handler to handle the response body,such as return a Entity object.
- * </p>
+ * <p>
  * Created by seagle on 2018/3/16.
  *
  * @author yuanxiudong66@sina.com
@@ -179,6 +177,7 @@ public class HttpRequest {
      *
      * @param executor request thread pool or null.
      * @param callback Async request callback or null.
+     * @return HttpRequest
      */
     public HttpRequest doGet(ExecutorService executor, HttpCallback callback) {
         if (mSubmitted) {
@@ -199,6 +198,7 @@ public class HttpRequest {
      *
      * @param executor request thread pool or null.
      * @param callback Async request callback or null.
+     * @return HttpRequest
      */
     public HttpRequest doPost(ExecutorService executor, HttpCallback callback) {
         if (mSubmitted) {

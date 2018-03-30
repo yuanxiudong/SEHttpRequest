@@ -52,7 +52,8 @@ public class HttpHeader {
     /**
      * Return http header value.
      *
-     * @param header header name
+     * @param header       header name
+     * @param defaultValue default value
      * @return header value
      */
     public String getHeader(String header, String defaultValue) {
