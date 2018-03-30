@@ -24,7 +24,9 @@ public class HttpRequestTest {
         HttpRequest httpRequest = new HttpRequest("http://ip.taobao.com/service/getIpInfo.php?ip=210.21.220.218", handler);
         httpRequest.setReadTimeout(10000, TimeUnit.MILLISECONDS);
         httpRequest.setConnectTimeout(10000, TimeUnit.MILLISECONDS);
+        httpRequest.getHeader().setHeader("Content-Type","text/plain");
         HttpResponse response = httpRequest.doGet(null, null).getResponse();
+
         int code = response.getCode();
         String message = response.getMessage();
         HttpHeader header = response.getHeader();
