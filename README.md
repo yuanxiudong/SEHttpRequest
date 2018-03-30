@@ -1,3 +1,13 @@
+<a href='https://gitee.com/SilentEagle/SEHttpRequest'><img src='https://gitee.com/SilentEagle/SEHttpRequest/widgets/widget_2.svg' alt='Fork me on Gitee'></img></a>
+HTML
+Markdown
+Image
+<a href='https://gitee.com/SilentEagle/SEHttpRequest'><img src='https://gitee.com/SilentEagle/SEHttpRequest/widgets/widget_3.svg' alt='Fork me on Gitee'></img></a>
+HTML
+Markdown
+Image
+<a href='https://gitee.com/SilentEagle/SEHttpRequest'><img src='https://gitee.com/SilentEagle/SEHttpRequest/widgets/widget_4.svg' alt='Fork me on Gitee'></img></a>
+
 # SEHttpRequest
 简单封装了一下HttpUrlConnection，纯Java语言实现，基于AndroidStudio Gradle 构建，
 可用于Java项目和Android项目。体积小巧，实现简单，能够胜任一般简单的HTTP请求开发需求。
@@ -72,6 +82,11 @@ httpRequest.doGet(null, new HttpCallback() {
 #### 请求头配置
 调用HttpRequest#getHeader()就可以获取到请求的头部对象，调用HttpHeader#setHeader(key,value)来配置调用方希望配置的参数。
 
+例如：
+```
+HttpRequest httpRequest = new HttpRequest("http://ip.taobao.com/service/getIpInfo.php?ip=210.21.220.218", );
+httpRequest.getHeader().setHeader("Content-Type","text/plain");
+```
 #### 线程配置
 如果在提交HTTP请求的时候，第一个参数是线程池，如果客户端希望使用自定义的线程池来驱动请求任务，
 可以传入这个参数，否则系统使用默认线程池。
