@@ -11,6 +11,8 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -26,6 +28,15 @@ public class HttpRequestTest {
         httpRequest.setConnectTimeout(10000, TimeUnit.MILLISECONDS);
         httpRequest.getHeader().setHeader("Content-Type","text/plain");
         HttpResponse response = httpRequest.doGet(null, null).getResponse();
+
+        httpRequest.doGet(null, new HttpCallback() {
+            @Override
+            public void onRequestComplete(HttpRequest httpRequest, HttpResponse httpResponse) {
+                int code = httpResponse.getCode();
+                String message = httpResponse.getMessage();
+                HttpHeader header = httpResponse.getHeader();
+            }
+        });
 
         int code = response.getCode();
         String message = response.getMessage();
