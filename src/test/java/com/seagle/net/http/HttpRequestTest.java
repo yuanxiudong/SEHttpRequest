@@ -153,9 +153,4 @@ public class HttpRequestTest {
             fail();
         }
     }
-
-    @Test
-    public void fileUpload(){
-
-    }
 }
