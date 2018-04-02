@@ -22,13 +22,13 @@
 
 本工程是基于Android Studio Gradle构建的一个单独的Module，需要导入到具体的工程中运行。
 
-![工程目录结构](./doc/project_structure.png)
+![工程目录结构](doc/project_structure.png)
 
 ### 使用说明
 
 #### 工作流程
 
-![工程目录结构](./doc/work_flow.png)
+![工程目录结构](doc/work_flow.png)
 
 #### 请求方法
 
