@@ -115,7 +115,7 @@ body对象是构建HttpRequest时设置的HttpResponseHandler处理之后返回�
 ### 不支持的功能
 - 代理设置
 - SSH设置,但支持默认HTTPS行为
-- 服务器重定向处理
+- 服务器重定向处理.
 
 ### 联系方式
 - Email： yuanxiudong66@sina.com
