@@ -47,7 +47,7 @@ public class HttpRequest {
     private HttpRequestTask.HttpMethod mHttpMethod;
     protected final HttpHeader mHeaders = new HttpHeader();
     protected InputStream mBodyStream;
-    private final HttpResponseHandler mResponseHandler;
+    private final HttpResponseHandler<?> mResponseHandler;
 
     private WeakReference<HttpCallback> mCallback;
     private volatile HttpRequestSession mRequestSession;
@@ -63,7 +63,7 @@ public class HttpRequest {
      * @param url             the request url
      * @param responseHandler response handler
      */
-    public HttpRequest(String url, HttpResponseHandler responseHandler) {
+    public HttpRequest(String url, HttpResponseHandler<?> responseHandler) {
         mURL = url;
         mSubmitted = false;
         mHttpMethod = HttpRequestTask.HttpMethod.GET;

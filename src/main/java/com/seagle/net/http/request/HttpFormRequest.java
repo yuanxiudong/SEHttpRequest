@@ -21,7 +21,7 @@ public class HttpFormRequest extends HttpRequest {
     private List<FormParam> mFormParams = new CopyOnWriteArrayList<>();
     private Map<String, FormParam> mFormParamMap = new ConcurrentHashMap<>();
 
-    public HttpFormRequest(String url, HttpResponseHandler responseHandler) {
+    public HttpFormRequest(String url, HttpResponseHandler<?>  responseHandler) {
         super(url, responseHandler);
     }
 

@@ -39,7 +39,7 @@ public class HttpMultipleRequest extends HttpRequest {
      * @param boundary        multiple split boundary or null
      * @param responseHandler response handler
      */
-    public HttpMultipleRequest(String url, String boundary, HttpResponseHandler responseHandler) {
+    public HttpMultipleRequest(String url, String boundary, HttpResponseHandler<?> responseHandler) {
         super(url, responseHandler);
         if (boundary != null && boundary.trim().length() != 0) {
             mBoundary = boundary;
@@ -89,8 +89,8 @@ public class HttpMultipleRequest extends HttpRequest {
      *
      * @param name param name
      * @param file param file
-     * @throws FileNotFoundException file not found or is a directory
-     * @throws IllegalAccessException    file can't read
+     * @throws FileNotFoundException  file not found or is a directory
+     * @throws IllegalAccessException file can't read
      */
     public void addParam(String name, File file) throws FileNotFoundException, IllegalAccessException {
         MultipleFormParam param = new MultipleFormParam(name, file, null);
