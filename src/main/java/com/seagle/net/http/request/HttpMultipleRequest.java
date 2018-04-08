@@ -218,7 +218,7 @@ public class HttpMultipleRequest extends HttpRequest {
          * @throws IllegalAccessException file can't read
          */
         public MultipleFormParam(String name, File file, String contentType) throws FileNotFoundException, IllegalAccessException {
-            if (file == null || !file.isDirectory() || !file.exists()) {
+            if (file == null || file.isDirectory() || !file.exists()) {
                 throw new FileNotFoundException();
             }
             if (!file.canRead()) {

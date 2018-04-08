@@ -1,6 +1,7 @@
 package com.seagle.net.http;
 
 import com.seagle.net.http.request.HttpFormRequest;
+import com.seagle.net.http.request.HttpMultipleRequest;
 import com.seagle.net.http.response.HttpFileDownloadResponseHandler;
 import com.seagle.net.http.response.HttpTextResponseHandler;
 
@@ -10,6 +11,7 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -20,6 +22,9 @@ import java.util.concurrent.TimeUnit;
  * Created by seagle on 2018/3/28.
  */
 public class HttpRequestTest {
+    /**
+     * Test simple sync http get request.
+     */
     @Test
     public void doSyncGet() throws Exception {
         HttpTextResponseHandler handler = new HttpTextResponseHandler();
@@ -48,8 +53,11 @@ public class HttpRequestTest {
         }
     }
 
+    /**
+     * Test simple sync http post request.
+     */
     @Test
-    public void doSyncPost(){
+    public void doSyncPost() {
         HttpTextResponseHandler handler = new HttpTextResponseHandler();
         HttpRequest httpRequest = new HttpRequest("http://ip.taobao.com/service/getIpInfo.php", handler);
         String params = "ip=210.21.220.218";
@@ -71,17 +79,20 @@ public class HttpRequestTest {
             }
             System.out.println();
             System.out.println(bodyStr);
-        } else if(response.getCode() == HttpResponse.SYSTEM_ERROR){
+        } else if (response.getCode() == HttpResponse.SYSTEM_ERROR) {
             Throwable throwable = (Throwable) body;
             throwable.printStackTrace();
             fail("Request failed: (" + response.getCode() + ", " + response.getMessage() + ")");
-        }else{
+        } else {
             fail("Request failed: (" + response.getCode() + ", " + response.getMessage() + ")");
         }
     }
 
+    /**
+     * Test sync form http get request.
+     */
     @Test
-    public void doFormGet() {
+    public void doSyncFormGet() {
         HttpTextResponseHandler handler = new HttpTextResponseHandler();
         HttpFormRequest httpRequest = new HttpFormRequest("http://ip.taobao.com/service/getIpInfo.php", handler);
         httpRequest.addParam("ip", "210.21.220.218");
@@ -110,8 +121,11 @@ public class HttpRequestTest {
         }
     }
 
+    /**
+     * Test sync form http post request.
+     */
     @Test
-    public void doFormPost() throws Exception {
+    public void doSyncFormPost() throws Exception {
         HttpTextResponseHandler handler = new HttpTextResponseHandler();
         HttpFormRequest httpRequest = new HttpFormRequest("http://ip.taobao.com/service/getIpInfo.php", handler);
         //httpRequest.addParam("ip", "210.21.220.218");
@@ -140,6 +154,9 @@ public class HttpRequestTest {
         }
     }
 
+    /**
+     * Test async http file download request.
+     */
     @Test
     public void doFileDownload() throws IOException, IllegalAccessException {
         final CountDownLatch latch = new CountDownLatch(1);
@@ -187,8 +204,51 @@ public class HttpRequestTest {
         }
     }
 
+    /**
+     * Test async http file upload request.
+     */
     @Test
-    public void doFileUpload() {
-
+    public void doFileUpload() throws FileNotFoundException, IllegalAccessException {
+        final CountDownLatch latch = new CountDownLatch(1);
+        final HttpMultipleRequest request = new HttpMultipleRequest("http://ip.taobao.com/service/getIpInfo.php", null, null);
+        File file = new File("D:/123.png");
+        HttpMultipleRequest.MultipleFormParam param = new HttpMultipleRequest.MultipleFormParam("file", file, "image/x-png");
+        request.addParam(param);
+        request.setConnectTimeout(10, TimeUnit.SECONDS);
+        request.setReadTimeout(10, TimeUnit.SECONDS);
+        request.doPost(null, new HttpCallback() {
+            @Override
+            public void onRequestComplete(HttpRequest httpRequest, HttpResponse httpResponse) {
+                latch.countDown();
+                HttpResponse response = httpRequest.getResponse();
+                int code = response.getCode();
+                String message = response.getMessage();
+                HttpHeader header = response.getHeader();
+                Object body = response.getBody();
+                System.out.println(String.format("Response[code:%d  message:%s]", code, message));
+                if (code == 200) {
+                    System.out.println(header.getVersion());
+                    for (String key : header.getAllHeaders().keySet()) {
+                        System.out.println(String.format("%s:%s", key, header.getHeader(key)));
+                    }
+                    System.out.println();
+                    System.out.println("Upload file success");
+                } else if (code == HttpResponse.SYSTEM_ERROR) {
+                    Throwable throwable = (Throwable) body;
+                    if (throwable != null) {
+                        throwable.printStackTrace();
+                    }
+                    fail("Request failed: (" + response.getCode() + ", " + response.getMessage() + ")");
+                } else {
+                    System.out.println();
+                    System.out.println("Upload file failed: " );
+                }
+            }
+        });
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
