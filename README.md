@@ -42,7 +42,7 @@
 示例：
 
 ```
-HttpRequest httpRequest = new HttpRequest("http://ip.taobao.com/service/getIpInfo.php?ip=210.21.220.218", );
+HttpRequest httpRequest = new HttpRequest("http://ip.taobao.com/service/getIpInfo.php?ip=210.21.220.218", null);
 httpRequest.getHeader().setHeader("Content-Type","text/plain");
 HttpResponse response = httpRequest.doGet(null, null).getResponse();
 int code = response.getCode();
@@ -56,7 +56,7 @@ HttpHeader header = response.getHeader();
 
 示例：
 ```
-HttpRequest httpRequest = new HttpRequest("http://ip.taobao.com/service/getIpInfo.php?ip=210.21.220.218", );
+HttpRequest httpRequest = new HttpRequest("http://ip.taobao.com/service/getIpInfo.php?ip=210.21.220.218", null);
 httpRequest.getHeader().setHeader("Content-Type","text/plain");
 httpRequest.doGet(null, new HttpCallback() {
    @Override

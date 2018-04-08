@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
@@ -19,8 +20,8 @@ import java.util.concurrent.TimeUnit;
  * Created by seagle on 2018/3/28.
  */
 public class HttpRequestTest {
-    @org.junit.Test
-    public void doGet() throws Exception {
+    @Test
+    public void doSyncGet() throws Exception {
         HttpTextResponseHandler handler = new HttpTextResponseHandler();
         HttpRequest httpRequest = new HttpRequest("http://ip.taobao.com/service/getIpInfo.php?ip=210.21.220.218", handler);
         httpRequest.setReadTimeout(10000, TimeUnit.MILLISECONDS);
@@ -45,7 +46,38 @@ public class HttpRequestTest {
             throwable.printStackTrace();
             fail("Request failed: (" + response.getCode() + ", " + response.getMessage() + ")");
         }
-        httpRequest.cancel();
+    }
+
+    @Test
+    public void doSyncPost(){
+        HttpTextResponseHandler handler = new HttpTextResponseHandler();
+        HttpRequest httpRequest = new HttpRequest("http://ip.taobao.com/service/getIpInfo.php", handler);
+        String params = "ip=210.21.220.218";
+        //httpRequest.setBodyData(params.getBytes());
+        httpRequest.setInputStream(new ByteArrayInputStream(params.getBytes()));
+        httpRequest.setReadTimeout(10000, TimeUnit.MILLISECONDS);
+        httpRequest.setConnectTimeout(10000, TimeUnit.MILLISECONDS);
+        HttpResponse response = httpRequest.doPost(null, null).getResponse();
+        int code = response.getCode();
+        String message = response.getMessage();
+        HttpHeader header = response.getHeader();
+        Object body = response.getBody();
+        System.out.println(String.format("Response[code:%d  message:%s]", code, message));
+        if (response.getCode() == 200) {
+            String bodyStr = body.toString();
+            System.out.println(header.getVersion());
+            for (String key : header.getAllHeaders().keySet()) {
+                System.out.println(String.format("%s:%s", key, header.getHeader(key)));
+            }
+            System.out.println();
+            System.out.println(bodyStr);
+        } else if(response.getCode() == HttpResponse.SYSTEM_ERROR){
+            Throwable throwable = (Throwable) body;
+            throwable.printStackTrace();
+            fail("Request failed: (" + response.getCode() + ", " + response.getMessage() + ")");
+        }else{
+            fail("Request failed: (" + response.getCode() + ", " + response.getMessage() + ")");
+        }
     }
 
     @Test
@@ -53,7 +85,7 @@ public class HttpRequestTest {
         HttpTextResponseHandler handler = new HttpTextResponseHandler();
         HttpFormRequest httpRequest = new HttpFormRequest("http://ip.taobao.com/service/getIpInfo.php", handler);
         httpRequest.addParam("ip", "210.21.220.218");
-        httpRequest.addParam(new HttpFormRequest.FormParam("ip", "210.21.220.218"));
+        //httpRequest.addParam(new HttpFormRequest.FormParam("ip", "210.21.220.218"));
         httpRequest.setReadTimeout(10, TimeUnit.MINUTES);
         httpRequest.setConnectTimeout(10, TimeUnit.MINUTES);
         httpRequest.doGet(null, null);
@@ -79,10 +111,11 @@ public class HttpRequestTest {
     }
 
     @Test
-    public void doPost() throws Exception {
+    public void doFormPost() throws Exception {
         HttpTextResponseHandler handler = new HttpTextResponseHandler();
         HttpFormRequest httpRequest = new HttpFormRequest("http://ip.taobao.com/service/getIpInfo.php", handler);
-        httpRequest.addParam("ip", "210.21.220.218");
+        //httpRequest.addParam("ip", "210.21.220.218");
+        httpRequest.addParam(new HttpFormRequest.FormParam("ip", "210.21.220.218"));
         httpRequest.setReadTimeout(10, TimeUnit.MINUTES);
         httpRequest.setConnectTimeout(10, TimeUnit.MINUTES);
         httpRequest.doPost(null, null);
@@ -108,7 +141,7 @@ public class HttpRequestTest {
     }
 
     @Test
-    public void fileDownload() throws IOException, IllegalAccessException {
+    public void doFileDownload() throws IOException, IllegalAccessException {
         final CountDownLatch latch = new CountDownLatch(1);
         String fileUrl = "http://img.zcool.cn/community/01e44d5711c84f6ac72513437994cb.jpg@2o.jpg";
         File file = new File("D:/1234.png");
@@ -152,5 +185,10 @@ public class HttpRequestTest {
         } else {
             fail();
         }
+    }
+
+    @Test
+    public void doFileUpload() {
+
     }
 }
