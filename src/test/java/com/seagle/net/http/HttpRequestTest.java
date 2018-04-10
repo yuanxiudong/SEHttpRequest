@@ -13,6 +13,8 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -210,10 +212,13 @@ public class HttpRequestTest {
     @Test
     public void doFileUpload() throws FileNotFoundException, IllegalAccessException {
         final CountDownLatch latch = new CountDownLatch(1);
-        final HttpMultipleRequest request = new HttpMultipleRequest("http://ip.taobao.com/service/getIpInfo.php", null, null);
-        File file = new File("D:/123.png");
-        HttpMultipleRequest.MultipleFormParam param = new HttpMultipleRequest.MultipleFormParam("file", file, "image/x-png");
+        HttpTextResponseHandler handler = new HttpTextResponseHandler();
+        final HttpMultipleRequest request = new HttpMultipleRequest("http://localhost:8080/SEWebServer/file_upload.do", "-------23281168279961", handler);
+        File file = new File("D:/1.log");
+        HttpMultipleRequest.MultipleFormParam param = new HttpMultipleRequest.MultipleFormParam("file", file, null);
         request.addParam(param);
+        request.addParam("ip", "210.21.220.218");
+        request.addParam("random", "" + System.currentTimeMillis());
         request.setConnectTimeout(10, TimeUnit.SECONDS);
         request.setReadTimeout(10, TimeUnit.SECONDS);
         request.doPost(null, new HttpCallback() {
@@ -232,7 +237,7 @@ public class HttpRequestTest {
                         System.out.println(String.format("%s:%s", key, header.getHeader(key)));
                     }
                     System.out.println();
-                    System.out.println("Upload file success");
+                    System.out.println("Upload file success: "+body.toString());
                 } else if (code == HttpResponse.SYSTEM_ERROR) {
                     Throwable throwable = (Throwable) body;
                     if (throwable != null) {
@@ -241,7 +246,7 @@ public class HttpRequestTest {
                     fail("Request failed: (" + response.getCode() + ", " + response.getMessage() + ")");
                 } else {
                     System.out.println();
-                    System.out.println("Upload file failed: " );
+                    System.out.println("Upload file failed: ");
                 }
             }
         });

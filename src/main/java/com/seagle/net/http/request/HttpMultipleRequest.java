@@ -4,11 +4,14 @@ import com.seagle.net.http.HttpCallback;
 import com.seagle.net.http.HttpRequest;
 import com.seagle.net.http.HttpResponseHandler;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.SequenceInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,6 +31,7 @@ import java.util.concurrent.ExecutorService;
  */
 public class HttpMultipleRequest extends HttpRequest {
 
+    private static final String BD_PREFIX = "--";
     private List<MultipleFormParam> mFormParams = new CopyOnWriteArrayList<>();
     private Map<String, MultipleFormParam> mFormParamMap = new ConcurrentHashMap<>();
     private String mBoundary = System.currentTimeMillis() + "";
@@ -137,11 +141,11 @@ public class HttpMultipleRequest extends HttpRequest {
     }
 
     public HttpRequest doGet(ExecutorService executor, HttpCallback callback) {
-        return super.doPost(executor, callback);
+        return this.doPost(executor, callback);
     }
 
     public HttpRequest doPost(ExecutorService executor, HttpCallback callback) {
-        mHeaders.setHeader("Content-Type", " multipart/form-data; boundary=-----------#" + mBoundary);
+        mHeaders.setHeader("Content-Type", " multipart/form-data; boundary=" + mBoundary);
         return super.doPost(executor, callback);
     }
 
@@ -152,30 +156,38 @@ public class HttpMultipleRequest extends HttpRequest {
             List<InputStream> streamList = new ArrayList<>();
             for (MultipleFormParam param : mFormParams) {
                 StringBuilder builder = new StringBuilder();
-                builder.append("-----------#").append(mBoundary).append("\r\n");
+                builder.append(BD_PREFIX).append(mBoundary).append("\r\n");
                 if (MultipleFormParam.FILE_PARAM == param.type) {
                     String fileName = param.file.getName();
-                    builder.append("Content-Disposition: form-data; name=\"").append(param.name).append("\"; filename=\"").append(fileName).append("\"\r\n");
+                    builder.append("Content-Disposition: form-data; name=\"").append(param.name).append("\";filename=\"").append(fileName).append("\"\r\n");
                     if (param.contentType != null && param.contentType.trim().length() > 0) {
-                        builder.append("Content-Type:").append(param.contentType).append("\r\n\r\n");
+                        builder.append("Content-Type:").append(param.contentType);
                     } else {
-                        builder.append("Content-Type: application/octet-stream").append("\r\n\r\n");
+                        builder.append("Content-Type: application/octet-stream");
                     }
-                    builder.append("Content-Transfer-Encoding: binary" + "\r\n\r\n");
+                    builder.append("\r\n\r\n");
                     InputStream headStream = new ByteArrayInputStream(builder.toString().getBytes());
                     InputStream fileStream = new FileInputStream(param.file);
                     streamList.add(headStream);
                     streamList.add(fileStream);
+                    streamList.add(new ByteArrayInputStream("\r\n".getBytes()));
                 } else {
-                    builder.append("Content-Disposition: form-data; name=\"").append(param.name).append("\"\r\n");
+                    builder.append("Content-Disposition: form-data; name=\"").append(param.name).append("\"");
                     if (param.contentType != null && param.contentType.trim().length() > 0) {
-                        builder.append("Content-Type:").append(param.contentType).append("\r\n\r\n");
+                        builder.append("\r\n");
+                        builder.append("Content-Type:").append(param.contentType);
                     }
-                    builder.append(param.value).append("\r\n");
+                    builder.append("\r\n\r\n");
+                    builder.append(param.value);
+                    builder.append("\r\n");
+
                     InputStream headStream = new ByteArrayInputStream(builder.toString().getBytes());
                     streamList.add(headStream);
                 }
             }
+            InputStream bodyEndStream = new ByteArrayInputStream((BD_PREFIX + mBoundary + "--" + "\r\n").getBytes());
+            streamList.add(bodyEndStream);
+
             Enumeration<InputStream> enumeration = Collections.enumeration(streamList);
             mBodyStream = new SequenceInputStream(enumeration);
             return super.getInputStream();

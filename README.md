@@ -22,13 +22,13 @@
 
 本工程是基于Android Studio Gradle构建的一个单独的Module，需要导入到具体的工程中运行。
 
-![工程目录结构](doc/project_structure.png)
+![工程目录结构](https://gitee.com/uploads/images/2018/0408/143244_ccb01ae4_360026.png)
 
 ### 使用说明
 
 #### 工作流程
 
-![工程目录结构](doc/work_flow.png)
+![工作流程](https://gitee.com/uploads/images/2018/0408/143335_3dc9b46a_360026.png "work_flow.png")
 
 #### 请求方法
 
@@ -78,7 +78,7 @@ httpRequest.doGet(null, new HttpCallback() {
 
 例如：
 ```
-HttpRequest httpRequest = new HttpRequest("http://ip.taobao.com/service/getIpInfo.php?ip=210.21.220.218", );
+HttpRequest httpRequest = new HttpRequest("http://ip.taobao.com/service/getIpInfo.php?ip=210.21.220.218", null);
 httpRequest.getHeader().setHeader("Content-Type","text/plain");
 ```
 #### 线程配置

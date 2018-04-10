@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -134,7 +135,7 @@ class HttpRequestTask implements Callable<HttpResponse> {
             try {
                 byte[] buffer = new byte[1024];
                 int readLen;
-                while (bodyStream.available() > 0 && (readLen = bodyStream.read(buffer)) > 0) {
+                while ((readLen = bodyStream.read(buffer)) > 0) {
                     outputStream.write(buffer, 0, readLen);
                 }
                 outputStream.flush();
