@@ -7,7 +7,7 @@ package com.seagle.net.http;
  *
  * @author yuanxiudong66@sina.com
  */
-class HttpResponseHandleException extends Exception {
+public class HttpResponseHandleException extends Exception {
     HttpResponseHandleException(Throwable throwable) {
         super(throwable);
     }

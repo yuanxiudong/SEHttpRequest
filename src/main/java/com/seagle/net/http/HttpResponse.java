@@ -9,7 +9,10 @@ package com.seagle.net.http;
  */
 
 public class HttpResponse {
-
+    /**
+     * System error.
+     * An error occurred while executing the request.The response body is Throwable.
+     */
     public static final int SYSTEM_ERROR = -1;
 
     private int mCode;

@@ -42,7 +42,6 @@ import static com.seagle.net.http.HttpResponse.SYSTEM_ERROR;
 public class HttpRequest {
 
     private static volatile ExecutorService sDefaultExecutor;
-
     private final String mURL;
     private HttpRequestTask.HttpMethod mHttpMethod;
     protected final HttpHeader mHeaders = new HttpHeader();
@@ -58,7 +57,7 @@ public class HttpRequest {
 
     /**
      * Constructor.
-     * Be careful that,if HttpResponseHandler is null,you should call {@link #cancel()} to reset all resource after response success of failed!
+     * Be careful that,if HttpResponseHandler is null,you should call {@link #cancel()} to cancel all resource after response success of failed!
      *
      * @param url             the request url
      * @param responseHandler response handler
@@ -173,7 +172,7 @@ public class HttpRequest {
      * Perform http GET request.
      * If executor param is null,will use default thread pool to submit the request.
      * if callback param is null,call {@link #getResponse()} to get Response.
-     * Be careful that,if HttpResponseHandler is null,you should call {@link #cancel()} to reset all resource after response success of failed!
+     * Be careful that,if HttpResponseHandler is null,you should call {@link #cancel()} to cancel all resource after response success of failed!
      *
      * @param executor request thread pool or null.
      * @param callback Async request callback or null.
@@ -194,7 +193,7 @@ public class HttpRequest {
      * Perform http POST request.
      * If executor param is null,will use default thread pool to submit the request.
      * if callback param is null,call {@link #getResponse()} to get Response.
-     * Be careful that,if HttpResponseHandler is null,you should call {@link #cancel()} to reset all resource after response success of failed!
+     * Be careful that,if HttpResponseHandler is null,you should call {@link #cancel()} to cancel all resource after response success of failed!
      *
      * @param executor request thread pool or null.
      * @param callback Async request callback or null.

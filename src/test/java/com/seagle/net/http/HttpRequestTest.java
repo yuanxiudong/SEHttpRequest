@@ -13,8 +13,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -96,7 +94,7 @@ public class HttpRequestTest {
     @Test
     public void doSyncFormGet() {
         HttpTextResponseHandler handler = new HttpTextResponseHandler();
-        HttpFormRequest httpRequest = new HttpFormRequest("http://ip.taobao.com/service/getIpInfo.php", handler);
+        HttpFormRequest httpRequest = new HttpFormRequest("https://gitee.com/seagle", handler);
         httpRequest.addParam("ip", "210.21.220.218");
         //httpRequest.addParam(new HttpFormRequest.FormParam("ip", "210.21.220.218"));
         httpRequest.setReadTimeout(10, TimeUnit.MINUTES);

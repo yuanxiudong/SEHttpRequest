@@ -7,11 +7,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.concurrent.Callable;
 
 import static com.seagle.net.http.HttpResponse.SYSTEM_ERROR;
@@ -24,8 +21,6 @@ import static com.seagle.net.http.HttpResponse.SYSTEM_ERROR;
  */
 
 class HttpRequestTask implements Callable<HttpResponse> {
-
-    private static final Queue<HttpRequestTask> CACHE_TASK = new LinkedList<>();
 
     public enum HttpMethod {
         GET("GET"), POST("POST");
@@ -99,7 +94,7 @@ class HttpRequestTask implements Callable<HttpResponse> {
         }
         URL url = new URL(requestURL);
         mUrlConnection = (HttpURLConnection) url.openConnection();
-        mUrlConnection.setRequestMethod("GET");
+        mUrlConnection.setRequestMethod(HttpMethod.GET.getValue());
         mUrlConnection.setDoOutput(false);
         mUrlConnection.setDoInput(true);
         mUrlConnection.setConnectTimeout(mConnectTimeout);
@@ -116,7 +111,7 @@ class HttpRequestTask implements Callable<HttpResponse> {
     private HttpResponse httpPost() throws Exception {
         URL url = new URL(mHttpRequest.getURL());
         mUrlConnection = (HttpURLConnection) url.openConnection();
-        mUrlConnection.setRequestMethod("POST");
+        mUrlConnection.setRequestMethod(HttpMethod.POST.getValue());
         mUrlConnection.setChunkedStreamingMode(0);
         mUrlConnection.setDoOutput(true);
         mUrlConnection.setDoInput(true);
@@ -203,11 +198,6 @@ class HttpRequestTask implements Callable<HttpResponse> {
     void cancel() {
         mCanceled = true;
         if (mUrlConnection != null) {
-            synchronized (CACHE_TASK) {
-                if (CACHE_TASK.size() < 6) {
-                    CACHE_TASK.offer(this);
-                }
-            }
             mUrlConnection.disconnect();
         }
     }
@@ -221,13 +211,6 @@ class HttpRequestTask implements Callable<HttpResponse> {
     }
 
     static HttpRequestTask buildRequestTask(HttpRequest request) {
-        HttpRequestTask requestTask;
-        synchronized (CACHE_TASK) {
-            requestTask = CACHE_TASK.poll();
-        }
-        if (requestTask == null) {
-            requestTask = new HttpRequestTask(request);
-        }
-        return requestTask;
+        return new HttpRequestTask(request);
     }
 }

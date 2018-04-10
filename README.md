@@ -5,6 +5,7 @@
 # SEHttpRequest
 简单封装了一下HttpUrlConnection，纯Java语言实现，基于AndroidStudio Gradle 构建，
 可用于Java项目和Android项目。体积小巧，实现简单，能够胜任一般简单的HTTP请求开发需求。
+功能调用可以参考测试用例。
 
 ### 功能：
 
