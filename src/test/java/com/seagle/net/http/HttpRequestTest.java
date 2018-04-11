@@ -162,6 +162,9 @@ public class HttpRequestTest {
         final CountDownLatch latch = new CountDownLatch(1);
         String fileUrl = "http://img.zcool.cn/community/01e44d5711c84f6ac72513437994cb.jpg@2o.jpg";
         File file = new File("D:/1234.png");
+        if(file.exists()){
+            file.delete();
+        }
         if (file.createNewFile()) {
             HttpFileDownloadResponseHandler handler = new HttpFileDownloadResponseHandler(file);
             final HttpFormRequest httpRequest = new HttpFormRequest(fileUrl, handler);
