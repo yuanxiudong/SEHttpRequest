@@ -114,7 +114,7 @@ body对象是构建HttpRequest时设置的HttpResponseHandler处理之后返回�
 文件下载可以使用HttpFileDownloadResponseHandler就可以从HttpResponse#getBody得到下载的文件。
 
 ### API文档
-[API文档](/doc/index.html)
+[API文档](docs/index.html)
 
 ### 不支持的功能
 - 代理设置
