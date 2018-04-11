@@ -47,7 +47,7 @@ task generateJavadocJar(type: Jar, dependsOn: generateJavadoc) {
  */
 task copyFiles(dependsOn: generateJavadocJar) {
     doLast {
-        def docOutputPath = "doc"
+        def docOutputPath = "docs"
         copy {
             from('build/docs/javadoc/')
             into(docOutputPath)
