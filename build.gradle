@@ -17,7 +17,7 @@ version 1.2
  */
 task archiveReleaseJar(type: Jar, dependsOn: build) {
     archiveName "$project.name-$version" + ".jar"
-    from(project.buildDir.absolutePath + "/intermediates/classes/release/")
+    from(project.buildDir.absolutePath + "/classes/java/main")
 }
 
 /**
