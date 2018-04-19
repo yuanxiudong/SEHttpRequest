@@ -10,6 +10,9 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSocketFactory;
+
 import static com.seagle.net.http.HttpResponse.SYSTEM_ERROR;
 
 /**
@@ -53,6 +56,8 @@ public class HttpRequest {
     private Integer mConnectTimeout;
     private Integer mReadTimeout;
     protected volatile boolean mSubmitted;
+    protected volatile SSLSocketFactory mSSLSocketFactory;
+    protected volatile HostnameVerifier mHostnameVerifier;
 
 
     /**
@@ -125,6 +130,45 @@ public class HttpRequest {
     protected InputStream getInputStream() throws Exception {
         return mBodyStream;
     }
+
+    /**
+     * Set https ssl socket factory.
+     * Call this before request submit.
+     *
+     * @param factory SSLSocketFactory
+     */
+    public void setSSLSocketFactory(SSLSocketFactory factory) {
+        mSSLSocketFactory = factory;
+    }
+
+    /**
+     * Return https ssl socket factory.
+     *
+     * @return SSLSocketFactory
+     */
+    SSLSocketFactory getSSLSocketFactory() {
+        return mSSLSocketFactory;
+    }
+
+    /**
+     * Set https host name verifier.
+     * Call this before request submit.
+     *
+     * @param verifier HostnameVerifier
+     */
+    public void setHostnameVerifier(HostnameVerifier verifier) {
+        mHostnameVerifier = verifier;
+    }
+
+    /**
+     * Return https host name verifier.
+     *
+     * @return HostnameVerifier
+     */
+    HostnameVerifier getHostnameVerifier() {
+        return mHostnameVerifier;
+    }
+
 
     /**
      * Return response handler for internal.

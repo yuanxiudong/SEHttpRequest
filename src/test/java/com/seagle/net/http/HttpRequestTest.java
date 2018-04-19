@@ -13,8 +13,20 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 
 /**
@@ -162,7 +174,7 @@ public class HttpRequestTest {
         final CountDownLatch latch = new CountDownLatch(1);
         String fileUrl = "http://img.zcool.cn/community/01e44d5711c84f6ac72513437994cb.jpg@2o.jpg";
         File file = new File("D:/1234.png");
-        if(file.exists()){
+        if (file.exists()) {
             file.delete();
         }
         if (file.createNewFile()) {
@@ -238,7 +250,7 @@ public class HttpRequestTest {
                         System.out.println(String.format("%s:%s", key, header.getHeader(key)));
                     }
                     System.out.println();
-                    System.out.println("Upload file success: "+body.toString());
+                    System.out.println("Upload file success: " + body.toString());
                 } else if (code == HttpResponse.SYSTEM_ERROR) {
                     Throwable throwable = (Throwable) body;
                     if (throwable != null) {
@@ -256,5 +268,74 @@ public class HttpRequestTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Test async http file upload request.
+     */
+    @Test
+    public void doHttps() {
+        String httpsUrl = "https://www.cnblogs.com/";
+        HttpTextResponseHandler handler = new HttpTextResponseHandler();
+        HttpRequest httpRequest = new HttpRequest(httpsUrl, handler);
+        httpRequest.setReadTimeout(10000, TimeUnit.MILLISECONDS);
+        httpRequest.setConnectTimeout(10000, TimeUnit.MILLISECONDS);
+        httpRequest.getHeader().setHeader("Content-Type", "text/plain");
+        httpRequest.setSSLSocketFactory(getSSLFactory());
+        httpRequest.setHostnameVerifier(new HostnameVerifier() {
+            @Override
+            public boolean verify(String s, SSLSession sslSession) {
+                System.out.println("C: " + sslSession);
+                return "www.cnblogs.com".equalsIgnoreCase(s);
+            }
+        });
+        HttpResponse response = httpRequest.doGet(null, null).getResponse();
+        int code = response.getCode();
+        String message = response.getMessage();
+        HttpHeader header = response.getHeader();
+        Object body = response.getBody();
+        System.out.println(String.format("Response[code:%d  message:%s]", code, message));
+        if (response.getCode() == 200) {
+            String bodyStr = body.toString();
+            System.out.println(header.getVersion());
+            for (String key : header.getAllHeaders().keySet()) {
+                System.out.println(String.format("%s:%s", key, header.getHeader(key)));
+            }
+            System.out.println();
+            System.out.println(bodyStr);
+        } else {
+            Throwable throwable = (Throwable) body;
+            throwable.printStackTrace();
+            fail("Request failed: (" + response.getCode() + ", " + response.getMessage() + ")");
+        }
+    }
+
+    private SSLSocketFactory getSSLFactory() {
+        TrustManager[] trustAllCerts = new TrustManager[]{
+                new X509TrustManager() {
+                    @Override
+                    public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+                        System.out.println("A: "+s);
+                    }
+
+                    @Override
+                    public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+                        System.out.println("B: "+s);
+                    }
+
+                    @Override
+                    public X509Certificate[] getAcceptedIssuers() {
+                        return new X509Certificate[0];
+                    }
+                }
+        };
+        try {
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, trustAllCerts, null);
+            return sslContext.getSocketFactory();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 }

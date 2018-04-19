@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import static com.seagle.net.http.HttpResponse.SYSTEM_ERROR;
 
 /**
@@ -103,6 +105,15 @@ class HttpRequestTask implements Callable<HttpResponse> {
         for (String key : headers.keySet()) {
             mUrlConnection.setRequestProperty(key, headers.get(key));
         }
+        if (mUrlConnection instanceof HttpsURLConnection) {
+            HttpsURLConnection httpsURLConnection = (HttpsURLConnection) mUrlConnection;
+            if (mHttpRequest.getSSLSocketFactory() != null) {
+                httpsURLConnection.setSSLSocketFactory(mHttpRequest.getSSLSocketFactory());
+            }
+            if (mHttpRequest.getHostnameVerifier() != null) {
+                httpsURLConnection.setHostnameVerifier(mHttpRequest.getHostnameVerifier());
+            }
+        }
         mUrlConnection.connect();
         return parseResponse();
 
@@ -122,7 +133,15 @@ class HttpRequestTask implements Callable<HttpResponse> {
         for (String key : headers.keySet()) {
             mUrlConnection.setRequestProperty(key, headers.get(key));
         }
-
+        if (mUrlConnection instanceof HttpsURLConnection) {
+            HttpsURLConnection httpsURLConnection = (HttpsURLConnection) mUrlConnection;
+            if (mHttpRequest.getSSLSocketFactory() != null) {
+                httpsURLConnection.setSSLSocketFactory(mHttpRequest.getSSLSocketFactory());
+            }
+            if (mHttpRequest.getHostnameVerifier() != null) {
+                httpsURLConnection.setHostnameVerifier(mHttpRequest.getHostnameVerifier());
+            }
+        }
         mUrlConnection.connect();
         InputStream bodyStream = mHttpRequest.getInputStream();
         if (bodyStream != null) {
