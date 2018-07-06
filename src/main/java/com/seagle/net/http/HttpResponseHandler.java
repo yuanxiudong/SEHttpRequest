@@ -18,5 +18,5 @@ public abstract class HttpResponseHandler<T> {
      * @return T
      * @throws Exception handle exception
      */
-    protected abstract T handleResponseBody(InputStream responseBody) throws Exception;
+    public abstract T handleResponseBody(InputStream responseBody) throws Exception;
 }

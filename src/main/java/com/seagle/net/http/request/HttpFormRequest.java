@@ -5,6 +5,7 @@ import com.seagle.net.http.HttpResponseHandler;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -96,6 +97,32 @@ public class HttpFormRequest extends HttpRequest {
     public void removeAllParams() {
         mFormParams.clear();
         mFormParamMap.clear();
+    }
+
+    /**
+     * Return param.
+     *
+     * @param name param name
+     */
+    public String getPraram(String name) {
+        FormParam param = mFormParamMap.get(name);
+        if (param != null) {
+            return param.value;
+        }
+        return null;
+    }
+
+    /**
+     * Return all params map.
+     *
+     * @return Map<String , String>
+     */
+    public Map<String, String> getParams() {
+        Map<String, String> paramsMap = new HashMap<>();
+        for (FormParam param : mFormParams) {
+            paramsMap.put(param.name, param.value);
+        }
+        return paramsMap;
     }
 
     @Override

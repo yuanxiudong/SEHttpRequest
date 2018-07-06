@@ -16,7 +16,7 @@ import java.io.InputStreamReader;
 
 public class HttpTextResponseHandler extends HttpResponseHandler<String> {
     @Override
-    protected String handleResponseBody(InputStream bodyStream) throws IOException {
+    public String handleResponseBody(InputStream bodyStream) throws IOException {
         StringBuilder builder = new StringBuilder();
         BufferedReader reader = new BufferedReader(new InputStreamReader(bodyStream));
         String tempStr;

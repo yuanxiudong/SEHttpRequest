@@ -92,7 +92,11 @@ class HttpRequestTask implements Callable<HttpResponse> {
         }
         String requestURL = mHttpRequest.getURL();
         if (params != null && params.trim().length() > 0) {
-            requestURL = String.format("%s?%s", requestURL, params);
+            if(requestURL.contains("?")){
+                requestURL = String.format("%s&%s", requestURL, params);
+            }else{
+                requestURL = String.format("%s?%s", requestURL, params);
+            }
         }
         URL url = new URL(requestURL);
         mUrlConnection = (HttpURLConnection) url.openConnection();

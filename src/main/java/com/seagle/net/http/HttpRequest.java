@@ -51,13 +51,13 @@ public class HttpRequest {
     protected InputStream mBodyStream;
     private final HttpResponseHandler<?> mResponseHandler;
 
-    private WeakReference<HttpCallback> mCallback;
+    private HttpCallback mCallback;
     private volatile HttpRequestSession mRequestSession;
     private Integer mConnectTimeout;
     private Integer mReadTimeout;
     protected volatile boolean mSubmitted;
-    protected volatile SSLSocketFactory mSSLSocketFactory;
-    protected volatile HostnameVerifier mHostnameVerifier;
+    private volatile SSLSocketFactory mSSLSocketFactory;
+    private volatile HostnameVerifier mHostnameVerifier;
 
 
     /**
@@ -79,7 +79,7 @@ public class HttpRequest {
      *
      * @return url
      */
-    String getURL() {
+    protected String getURL() {
         return mURL;
     }
 
@@ -88,7 +88,7 @@ public class HttpRequest {
      *
      * @return HttpMethod
      */
-    HttpRequestTask.HttpMethod getHttpMethod() {
+    protected HttpRequestTask.HttpMethod getHttpMethod() {
         return mHttpMethod;
     }
 
@@ -227,7 +227,7 @@ public class HttpRequest {
             throw new IllegalStateException("Request has been submit!");
         }
         mSubmitted = true;
-        mCallback = new WeakReference<>(callback);
+        mCallback = callback;
         mHttpMethod = HttpRequestTask.HttpMethod.GET;
         submit(executor);
         return this;
@@ -248,7 +248,7 @@ public class HttpRequest {
             throw new IllegalStateException("Request has been submit!");
         }
         mSubmitted = true;
-        mCallback = new WeakReference<>(callback);
+        mCallback = callback;
         mHttpMethod = HttpRequestTask.HttpMethod.POST;
         submit(executor);
         return this;
@@ -349,11 +349,12 @@ public class HttpRequest {
                     response.setBody(ex);
                 }
                 if (!isCancelled() && mCallback != null && response != null) {
-                    HttpCallback callback = mCallback.get();
+                    HttpCallback callback = mCallback;
                     if (callback != null) {
                         callback.onRequestComplete(HttpRequest.this, response);
                     }
                 }
+                mCallback = null;
             }
         }
 

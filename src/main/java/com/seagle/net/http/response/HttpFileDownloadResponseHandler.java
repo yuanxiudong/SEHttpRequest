@@ -30,7 +30,7 @@ public class HttpFileDownloadResponseHandler extends HttpResponseHandler<File> {
     }
 
     @Override
-    protected File handleResponseBody(InputStream bodyStream) throws IOException, IllegalAccessException {
+    public File handleResponseBody(InputStream bodyStream) throws IOException, IllegalAccessException {
         if (mFile == null || !mFile.exists() || mFile.isDirectory()) {
             throw new FileNotFoundException();
         }

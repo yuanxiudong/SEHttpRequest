@@ -13,6 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -39,8 +40,15 @@ public class HttpRequestTest {
      */
     @Test
     public void doSyncGet() throws Exception {
-        HttpTextResponseHandler handler = new HttpTextResponseHandler();
-        HttpRequest httpRequest = new HttpRequest("http://ip.taobao.com/service/getIpInfo.php?ip=210.21.220.218", handler);
+        final HttpTextResponseHandler handler = new HttpTextResponseHandler();
+
+        HttpRequest httpRequest = new HttpRequest("http://ip.taobao.com/service/getIpInfo.php?ip=210.21.220.218", new HttpResponseHandler<String>(){
+            @Override
+            protected String handleResponseBody(InputStream responseBody) throws Exception {
+                Exception exception = new IllegalArgumentException("--------------------");
+                throw exception;
+            }
+        });
         httpRequest.setReadTimeout(10000, TimeUnit.MILLISECONDS);
         httpRequest.setConnectTimeout(10000, TimeUnit.MILLISECONDS);
         httpRequest.getHeader().setHeader("Content-Type", "text/plain");
